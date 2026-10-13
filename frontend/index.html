@@ -2332,6 +2332,13 @@
 
       container.innerHTML = list.map(c => {
         const patient = c.patient || { name: 'Anonymous Patient', village_name: 'Rural Hamlet' };
+        const patientDemographics = [
+          ['Age', patient.age != null ? `${patient.age} years` : 'Not provided'],
+          ['City', patient.city || patient.village_name || 'Not provided'],
+          ['Marital status', patient.marital_status || patient.maritalStatus || 'Not provided'],
+          ['Weight', patient.weight != null ? `${patient.weight} kg` : 'Not provided'],
+          ['Height', patient.height != null ? `${patient.height} cm` : 'Not provided']
+        ];
         
         const badgeColors = {
           red: 'bg-red-50 text-red-700 border-red-200 ring-red-500/20',
@@ -2361,6 +2368,14 @@
                 <div class="text-base font-bold text-slate-900">${patient.name}</div>
                 <div class="text-xs text-slate-600">📍 ${patient.village_name}</div>
                 <div class="text-xs text-slate-500">📞 ${patient.phone || 'Registered via Telegram'}</div>
+                <dl class="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 border-t border-slate-100 pt-3" aria-label="Additional patient details">
+                  ${patientDemographics.map(([label, value]) => `
+                    <div class="min-w-0">
+                      <dt class="text-[10px] font-semibold uppercase tracking-wide text-slate-400">${label}</dt>
+                      <dd class="break-words text-xs font-medium text-slate-700">${value}</dd>
+                    </div>
+                  `).join('')}
+                </dl>
               </div>
 
               <!-- AI Symptom Summary & Uploaded Patient Photos -->
