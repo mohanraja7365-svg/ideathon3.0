@@ -157,6 +157,34 @@
     .workspace-card:hover { border-color: #cbdcc8; background: linear-gradient(145deg, #fff, #f7faf4); }
     .workspace-card-icon { transition: transform .24s ease; }
     .workspace-card:hover .workspace-card-icon { transform: translateY(-2px) rotate(-4deg); }
+    .guide-launcher { position: fixed; right: 24px; bottom: 24px; z-index: 70; display: flex; align-items: center; gap: 11px; padding: 9px 17px 9px 9px; border: 1px solid rgb(255 255 255 / .2); border-radius: 999px; color: #fff; background: linear-gradient(135deg, #1b8064, #123f34); box-shadow: 0 14px 38px rgb(13 52 39 / .28); cursor: pointer; }
+    .guide-launcher:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgb(13 52 39 / .34); }
+    .guide-robot { display: grid; place-items: center; width: 43px; height: 43px; border: 1px solid rgb(255 255 255 / .38); border-radius: 50%; color: #153a30; background: linear-gradient(145deg, #dcf7c2, #a8e9b7); font-size: 21px; box-shadow: inset 0 1px 3px rgb(255 255 255 / .8); }
+    .guide-launch-copy { text-align: left; line-height: 1.25; }
+    .guide-launch-copy b { display: block; font-size: 12px; }
+    .guide-launch-copy small { color: #d0e8d9; font-size: 10px; }
+    .guide-panel { position: fixed; right: 24px; bottom: 92px; z-index: 70; display: flex; flex-direction: column; width: min(390px, calc(100vw - 28px)); height: min(590px, calc(100dvh - 120px)); overflow: hidden; border: 1px solid #dfe9df; border-radius: 24px; background: #fbfcf9; box-shadow: 0 24px 80px rgb(13 35 28 / .24); }
+    .guide-panel[hidden] { display: none; }
+    .guide-head { display: flex; align-items: center; gap: 11px; padding: 16px; color: white; background: radial-gradient(circle at 90% 0, rgb(196 239 143 / .18), transparent 40%), linear-gradient(130deg, #163e33, #102c25); }
+    .guide-head .guide-robot { flex: 0 0 auto; }
+    .guide-head-copy { min-width: 0; flex: 1; }
+    .guide-head-copy b { display: block; font: 750 15px/1.3 'Manrope', sans-serif; }
+    .guide-head-copy span { display: block; margin-top: 3px; color: #bfd5c6; font-size: 10px; }
+    .guide-close { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgb(255 255 255 / .2); border-radius: 11px; color: white; background: rgb(255 255 255 / .08); font-size: 19px; }
+    .guide-log { flex: 1; overflow-y: auto; padding: 16px 14px 10px; scroll-behavior: smooth; }
+    .guide-message { width: fit-content; max-width: 91%; margin: 0 0 11px; padding: 11px 13px; border: 1px solid #e4eae2; border-radius: 15px 15px 15px 5px; color: #30443a; background: white; box-shadow: 0 3px 10px rgb(20 42 37 / .035); font-size: 12px; line-height: 1.55; white-space: pre-wrap; }
+    .guide-message.user { margin-left: auto; border-color: #d4e8d2; border-radius: 15px 15px 5px 15px; color: #194633; background: #eaf5e6; }
+    .guide-note { margin: 0 2px 12px; padding: 9px 10px; border: 1px solid #e8e4d2; border-radius: 11px; color: #706b57; background: #f8f6ec; font-size: 10px; line-height: 1.5; }
+    .guide-choices { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 12px; }
+    .guide-choice, .guide-action { padding: 8px 11px; border: 1px solid #cfe1d0; border-radius: 999px; color: #226344; background: #f2f8ef; font-size: 10px; font-weight: 700; text-align: left; }
+    .guide-choice:hover, .guide-action:hover { border-color: #8eb99b; background: #e6f3e2; }
+    .guide-actions { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 13px; }
+    .guide-action.primary { border-color: #17795b; color: #fff; background: #17795b; }
+    .guide-action.emergency { border-color: #c8443b; color: #fff; background: #c8443b; }
+    .guide-composer { display: flex; align-items: center; gap: 8px; padding: 11px; border-top: 1px solid #e7ece6; background: white; }
+    .guide-composer input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid #dce5dc; border-radius: 12px; color: #18362b; background: #fbfcfa; font-size: 12px; }
+    .guide-send { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 12px; color: #fff; background: #17795b; font-size: 17px; }
+    @media (max-width: 480px) { .guide-launcher { right: 14px; bottom: 14px; } .guide-panel { right: 10px; bottom: 82px; height: min(580px, calc(100dvh - 104px)); } }
     @media (max-width: 1100px) {
       #tab-landing > div:first-child { grid-template-columns: 1fr; }
       .care-orbit { justify-self: stretch; width: 100%; }
@@ -1155,9 +1183,280 @@
     </div>
   </div>
 
+  <!-- Conversational front-end guide: helps visitors find the right existing feature. -->
+  <button id="guide-launcher" class="guide-launcher" type="button" aria-expanded="false" aria-controls="guide-panel" onclick="toggleCareGuide()">
+    <span class="guide-robot" aria-hidden="true">🤖</span>
+    <span class="guide-launch-copy"><b>Ask Medi</b><small>Your care guide</small></span>
+  </button>
+  <section id="guide-panel" class="guide-panel" aria-label="Medi care guide" hidden>
+    <div class="guide-head">
+      <span class="guide-robot" aria-hidden="true">🤖</span>
+      <div class="guide-head-copy"><b>Medi Guide</b><span>Guided help · no diagnosis</span></div>
+      <button class="guide-close" type="button" aria-label="Close guide" onclick="toggleCareGuide(false)">×</button>
+    </div>
+    <div id="guide-log" class="guide-log" role="log" aria-live="polite" aria-relevant="additions text"></div>
+    <form class="guide-composer" onsubmit="submitCareGuideMessage(event)">
+      <label class="sr-only" for="guide-input">Tell Medi what you want to do</label>
+      <input id="guide-input" type="text" maxlength="400" autocomplete="off" placeholder="I want to find a health camp…">
+      <button class="guide-send" type="submit" aria-label="Send message">↑</button>
+    </form>
+  </section>
+
   <!-- JAVASCRIPT APPLICATION LOGIC -->
   <script>
     const API_BASE = `${window.location.origin}/api`;
+    let careGuideContext = 'start';
+
+    function toggleCareGuide(forceOpen) {
+      const panel = document.getElementById('guide-panel');
+      const launcher = document.getElementById('guide-launcher');
+      const open = typeof forceOpen === 'boolean' ? forceOpen : panel.hidden;
+      panel.hidden = !open;
+      launcher.setAttribute('aria-expanded', String(open));
+      if (open && !document.getElementById('guide-log').childElementCount) {
+        guideBot('Hi, I’m Medi, your care guide. Tell me what you’re trying to do, and I’ll help you find the right part of the site.');
+        guideNote('Quick guide only: your message is used to choose a site section, not sent to an AI service. Please don’t enter patient names, phone numbers, or medical details.');
+        guideChoices([
+          ['care', 'I need care'], ['camp', 'Find a medical camp'], ['village', 'Village health alerts'],
+          ['emergency', 'Emergency help'], ['doctor', 'I’m a doctor'], ['volunteer', 'Volunteer delivery'], ['ngo', 'Register an NGO']
+        ]);
+      }
+      if (open) window.setTimeout(() => document.getElementById('guide-input').focus(), 50);
+    }
+
+    function guideBot(text) {
+      const bubble = document.createElement('div');
+      bubble.className = 'guide-message';
+      bubble.textContent = text;
+      const log = document.getElementById('guide-log');
+      log.appendChild(bubble);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function guideUser(text) {
+      const bubble = document.createElement('div');
+      bubble.className = 'guide-message user';
+      bubble.textContent = text;
+      const log = document.getElementById('guide-log');
+      log.appendChild(bubble);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function guideNote(text) {
+      const note = document.createElement('div');
+      note.className = 'guide-note';
+      note.textContent = text;
+      document.getElementById('guide-log').appendChild(note);
+    }
+
+    function guideChoices(items) {
+      const row = document.createElement('div');
+      row.className = 'guide-choices';
+      items.forEach(([value, label]) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'guide-choice';
+        button.textContent = label;
+        button.addEventListener('click', () => {
+          guideUser(label);
+          row.remove();
+          answerCareGuide(value);
+        });
+        row.appendChild(button);
+      });
+      document.getElementById('guide-log').appendChild(row);
+      document.getElementById('guide-log').scrollTop = document.getElementById('guide-log').scrollHeight;
+    }
+
+    function guideActions(items) {
+      const row = document.createElement('div');
+      row.className = 'guide-actions';
+      items.forEach(({ label, run, style = '' }) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `guide-action ${style}`.trim();
+        button.textContent = label;
+        button.addEventListener('click', run);
+        row.appendChild(button);
+      });
+      document.getElementById('guide-log').appendChild(row);
+      document.getElementById('guide-log').scrollTop = document.getElementById('guide-log').scrollHeight;
+    }
+
+    function guideOpenTab(tab, message) {
+      guideBot(message);
+      toggleCareGuide(false);
+      switchTab(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function guideOpenProtectedTab(tab, role) {
+      const currentRole = state.currentUser?.role;
+      if (currentRole === role || currentRole === 'admin') {
+        guideOpenTab(tab, 'You’re signed in with the right access. Opening your workspace now.');
+        return;
+      }
+      guideBot(`That workspace is restricted to ${role === 'doctor' ? 'verified doctors' : 'verified delivery volunteers'}. Sign in with an approved account to continue.`);
+      guideActions([{ label: 'Sign in', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('login'); } }]);
+    }
+
+    function detectCareGuideIntent(text) {
+      const value = text.toLowerCase();
+      if (/\b(emergency|urgent|ambulance|108|danger|bleeding|unconscious|breathing trouble)\b/.test(value)) return 'emergency';
+      if (/\b(camp|clinic|outreach|screening|checkup|check-up)\b/.test(value)) return 'camp';
+      if (/\b(outbreak|alert|disease|cluster|health signal|village|map)\b/.test(value)) return 'village';
+      if (/\b(volunteer|delivery|deliver|medicine pickup|pharmacy|prescription pickup)\b/.test(value)) return 'volunteer';
+      if (/\b(ngo|organization|organisation|partner)\b/.test(value)) return 'ngo';
+      if (value.trim() === 'doctor' || /\b(i am|i'm|as a|registered)\s+(qualified\s+|volunteer\s+)?doctor\b|\b(doctor dashboard|doctor workspace|clinical queue|triage dashboard|patient cases|clinician workspace)\b/.test(value)) return 'doctor';
+      if (/\b(patient|symptom|symptoms|sick|care|appointment|medical help|doctor|consultation)\b/.test(value)) return 'care';
+      return 'unknown';
+    }
+
+    function answerCareGuide(answer) {
+      if (careGuideContext === 'start') {
+        const detected = detectCareGuideIntent(answer);
+        answer = detected === 'unknown' ? answer : detected;
+      } else {
+        const words = answer.toLowerCase();
+        if (careGuideContext === 'emergency') answer = /\b(no|not|isn't|isnt|never)\b/.test(words) ? 'no' : (/\b(yes|urgent|emergency|danger|bleeding|unconscious|breathing)\b/.test(words) ? 'yes' : 'no');
+        if (careGuideContext === 'camp') answer = /\b(organize|organise|plan|host|run|schedule)\b/.test(words) ? 'organize' : 'visit';
+        if (careGuideContext === 'village') answer = /\b(camp|outreach|visit|map)\b/.test(words) ? 'camp' : 'alerts';
+        if (careGuideContext === 'doctor') answer = /\b(yes|registered|sign in|signin|approved)\b/.test(words) ? 'registered' : 'new';
+        if (careGuideContext === 'volunteer') answer = /\b(yes|approved|verified|already)\b/.test(words) ? 'approved' : 'new';
+        if (careGuideContext === 'ngo') answer = /\b(yes|lead|portal|approved|existing)\b/.test(words) ? 'lead' : 'new';
+      }
+      if (answer === 'unknown') {
+        careGuideContext = 'start';
+        guideBot('I’m not sure which workspace fits that yet. Pick the closest option below, or try “find a camp”, “village health alerts”, or “volunteer delivery”.');
+        guideChoices([
+          ['care', 'I need care'], ['camp', 'Find a camp'], ['village', 'Health alerts'],
+          ['emergency', 'Emergency help'], ['doctor', 'Doctor workspace'], ['volunteer', 'Volunteer delivery'], ['ngo', 'NGO registration']
+        ]);
+        return;
+      }
+
+      if (careGuideContext === 'emergency') {
+        careGuideContext = 'start';
+        if (answer === 'yes' || answer === 'emergency') {
+          guideBot('If someone may be in immediate danger, call 108 now. Medi Guide cannot contact emergency services or dispatch an ambulance. The site’s SOS console is a demo.');
+          guideActions([
+            { label: 'Call 108', style: 'emergency', run: () => { window.location.href = 'tel:108'; } },
+            { label: 'View SOS demo', run: () => guideOpenTab('sos', 'Opening the SOS demo console. It does not place a real emergency dispatch.') }
+          ]);
+        } else {
+          guideBot('Understood. For non-emergency community resources, you can look at upcoming medical camps or public health alerts.');
+          guideChoices([['camp', 'Find a medical camp'], ['village', 'View health alerts']]);
+        }
+        return;
+      }
+
+      if (careGuideContext === 'camp') {
+        careGuideContext = 'start';
+        if (answer === 'organize') {
+          guideBot('Camp planning is available to verified NGO leads. I can take you to registration or sign-in.');
+          guideActions([
+            { label: 'Register NGO', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('signup'); } },
+            { label: 'Sign in', run: () => { toggleCareGuide(false); openAuthModal('login'); } }
+          ]);
+        } else {
+          guideOpenTab('map', 'Opening the village map and upcoming public medical camps.');
+        }
+        return;
+      }
+
+      if (careGuideContext === 'village') {
+        careGuideContext = 'start';
+        if (answer === 'camp') guideOpenTab('map', 'Opening the village map and outreach camps.');
+        else guideOpenTab('radar', 'Opening the public health and outbreak radar.');
+        return;
+      }
+
+      if (careGuideContext === 'doctor') {
+        careGuideContext = 'start';
+        if (answer === 'registered') guideOpenProtectedTab('doctor', 'doctor');
+        else {
+          guideBot('Doctor access is limited to verified clinical accounts. You can sign in, or explore public village camps and health alerts.');
+          guideActions([{ label: 'Doctor sign in', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('login'); } }]);
+          guideChoices([['camp', 'Explore camps'], ['village', 'View public alerts']]);
+        }
+        return;
+      }
+
+      if (careGuideContext === 'volunteer') {
+        careGuideContext = 'start';
+        if (answer === 'approved') guideOpenProtectedTab('volunteer', 'volunteer');
+        else {
+          guideBot('Delivery access is limited to verified volunteers. Ask a participating NGO to onboard you, then sign in here.');
+          guideActions([{ label: 'Volunteer sign in', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('login'); } }]);
+        }
+        return;
+      }
+
+      if (careGuideContext === 'ngo') {
+        careGuideContext = 'start';
+        if (answer === 'lead') guideOpenProtectedTab('ngo-portal', 'ngo_lead');
+        else {
+          guideBot('Create an NGO account to request organization access. Team management stays restricted to approved NGO leads.');
+          guideActions([{ label: 'Register NGO', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('signup'); } }]);
+        }
+        return;
+      }
+
+      switch (answer) {
+        case 'emergency':
+          careGuideContext = 'emergency';
+          guideBot('Is someone in immediate danger right now?');
+          guideChoices([['yes', 'Yes — urgent help'], ['no', 'No, show me other options']]);
+          break;
+        case 'camp':
+          careGuideContext = 'camp';
+          guideBot('Are you looking for an upcoming public camp, or do you want to organize one?');
+          guideChoices([['visit', 'Find a camp to visit'], ['organize', 'Organize a camp']]);
+          break;
+        case 'village':
+          careGuideContext = 'village';
+          guideBot('What would you like to see for your community?');
+          guideChoices([['camp', 'Outreach camps'], ['alerts', 'Health alerts']]);
+          break;
+        case 'doctor':
+          careGuideContext = 'doctor';
+          guideBot('Are you a registered doctor with a MediSetu account?');
+          guideChoices([['registered', 'Yes, sign me in'], ['new', 'No, show public options']]);
+          break;
+        case 'volunteer':
+          careGuideContext = 'volunteer';
+          guideBot('Are you already an approved delivery volunteer?');
+          guideChoices([['approved', 'Yes, I’m verified'], ['new', 'I want to join']]);
+          break;
+        case 'ngo':
+          careGuideContext = 'ngo';
+          guideBot('Do you already have an approved NGO lead account?');
+          guideChoices([['lead', 'Yes, open my portal'], ['new', 'No, register my NGO']]);
+          break;
+        case 'care':
+          careGuideContext = 'start';
+          guideBot('This site guide does not collect symptoms or provide a patient consultation. Patients use the project’s configured Telegram intake. For an emergency, call 108. You can also find a public medical camp here.');
+          guideActions([
+            { label: 'Call 108', style: 'emergency', run: () => { window.location.href = 'tel:108'; } },
+            { label: 'Find a public camp', style: 'primary', run: () => guideOpenTab('map', 'Opening public medical camps.') }
+          ]);
+          break;
+        default:
+          careGuideContext = 'start';
+          guideBot('Choose an option and I’ll take you to the matching workspace.');
+          guideChoices([['care', 'I need care'], ['camp', 'Find a camp'], ['village', 'Health alerts'], ['emergency', 'Emergency help'], ['doctor', 'Doctor workspace'], ['volunteer', 'Volunteer delivery'], ['ngo', 'NGO registration']]);
+      }
+    }
+
+    function submitCareGuideMessage(event) {
+      event.preventDefault();
+      const input = document.getElementById('guide-input');
+      const message = input.value.trim();
+      if (!message) return;
+      guideUser(message);
+      input.value = '';
+      answerCareGuide(message);
+    }
 
     function toggleMobileMenu() {
       const nav = document.getElementById('main-nav');
