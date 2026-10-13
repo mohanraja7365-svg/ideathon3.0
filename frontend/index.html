@@ -171,7 +171,7 @@
     .guide-head-copy b { display: block; font: 750 15px/1.3 'Manrope', sans-serif; }
     .guide-head-copy span { display: block; margin-top: 3px; color: #bfd5c6; font-size: 10px; }
     .guide-close { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgb(255 255 255 / .2); border-radius: 11px; color: white; background: rgb(255 255 255 / .08); font-size: 19px; }
-    .guide-log { flex: 1; overflow-y: auto; padding: 16px 14px 10px; scroll-behavior: smooth; }
+    .guide-log { min-width: 0; flex: 1; overflow-x: hidden; overflow-y: auto; padding: 16px 14px 10px; scroll-behavior: smooth; }
     .guide-message { width: fit-content; max-width: 91%; margin: 0 0 11px; padding: 11px 13px; border: 1px solid #e4eae2; border-radius: 15px 15px 15px 5px; color: #30443a; background: white; box-shadow: 0 3px 10px rgb(20 42 37 / .035); font-size: 12px; line-height: 1.55; white-space: pre-wrap; }
     .guide-message.user { margin-left: auto; border-color: #d4e8d2; border-radius: 15px 15px 5px 15px; color: #194633; background: #eaf5e6; }
     .guide-note { margin: 0 2px 12px; padding: 9px 10px; border: 1px solid #e8e4d2; border-radius: 11px; color: #706b57; background: #f8f6ec; font-size: 10px; line-height: 1.5; }
@@ -191,6 +191,14 @@
     .guide-panel:not([hidden]) { animation: guidePanelIn .28s cubic-bezier(.2,.8,.2,1) both; }
     .guide-message, .guide-note { animation: guideMessageIn .3s cubic-bezier(.2,.8,.2,1) both; }
     .guide-choices, .guide-actions { animation: guideMessageIn .34s cubic-bezier(.2,.8,.2,1) both; }
+    .guide-choice.is-selected { border-color: #27815d; color: #124b35; background: #dff1da; box-shadow: 0 0 0 2px rgb(39 129 93 / .12); }
+    .guide-step-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 8px 12px; border-top: 1px solid #eef1eb; background: #fbfcf9; }
+    .guide-step-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 0 11px; border: 1px solid #dce6dc; border-radius: 11px; color: #3f5c4d; background: #fff; font-size: 11px; font-weight: 750; }
+    .guide-step-controls button:last-child { justify-self: end; border-color: #17795b; color: white; background: #17795b; }
+    .guide-step-controls button:disabled { cursor: not-allowed; opacity: .42; filter: grayscale(.35); }
+    .guide-step-controls button:not(:disabled):hover { transform: translateY(-1px); box-shadow: 0 5px 12px rgb(20 42 37 / .1); }
+    .guide-step-controls svg { width: 14px; height: 14px; flex: 0 0 auto; }
+    .guide-step-caption { color: #7b8980; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-align: center; text-transform: uppercase; white-space: nowrap; }
     .care-route-enter { animation: guideRouteIn .42s cubic-bezier(.2,.8,.2,1) both; }
     .guide-target-arrival { animation: guideTargetGlow 1.45s ease-out both; border-radius: 14px; }
     @media (max-width: 480px) { .guide-launcher { right: 14px; bottom: 14px; } .guide-panel { right: 10px; bottom: 82px; height: min(580px, calc(100dvh - 104px)); } }
@@ -1204,6 +1212,17 @@
       <button class="guide-close" type="button" aria-label="Close guide" onclick="toggleCareGuide(false)">×</button>
     </div>
     <div id="guide-log" class="guide-log" role="log" aria-live="polite" aria-relevant="additions text"></div>
+    <div class="guide-step-controls" aria-label="Guide navigation">
+      <button id="guide-back" type="button" onclick="guideGoBack()" disabled>
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5M7.5 10h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <span id="guide-step-caption" class="guide-step-caption">Step 1 · Choose</span>
+      <button id="guide-next" type="button" onclick="guideGoNext()" disabled>
+        Next
+        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m7.5 4.5 5.5 5.5-5.5 5.5M12.5 10h-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
     <form class="guide-composer" onsubmit="submitCareGuideMessage(event)">
       <label class="sr-only" for="guide-input">Tell Medi what you want to do</label>
       <input id="guide-input" type="text" maxlength="400" autocomplete="off" placeholder="I want to find a health camp…">
@@ -1215,6 +1234,59 @@
   <script>
     const API_BASE = `${window.location.origin}/api`;
     let careGuideContext = 'start';
+    let careGuideSelection = null;
+    const careGuideHistory = [];
+
+    function guideUpdateNavigation() {
+      const back = document.getElementById('guide-back');
+      const next = document.getElementById('guide-next');
+      const caption = document.getElementById('guide-step-caption');
+      if (!back || !next || !caption) return;
+      back.disabled = careGuideHistory.length === 0;
+      next.disabled = !careGuideSelection;
+      caption.textContent = careGuideContext === 'start'
+        ? (careGuideHistory.length ? 'Done · Review' : 'Step 1 · Choose')
+        : 'Step 2 · Tell us more';
+      caption.setAttribute('aria-live', 'polite');
+    }
+
+    function guideChoose(value, label, row, button) {
+      row.querySelectorAll('.guide-choice').forEach(choice => {
+        choice.classList.remove('is-selected');
+        choice.setAttribute('aria-pressed', 'false');
+      });
+      button.classList.add('is-selected');
+      button.setAttribute('aria-pressed', 'true');
+      careGuideSelection = { value, label, row };
+      guideUpdateNavigation();
+    }
+
+    function guideGoNext() {
+      if (!careGuideSelection) return;
+      const selected = careGuideSelection;
+      const log = document.getElementById('guide-log');
+      careGuideHistory.push({ html: log.innerHTML, context: careGuideContext, value: selected.value, label: selected.label });
+      careGuideSelection = null;
+      if (selected.row?.isConnected) selected.row.remove();
+      guideUser(selected.label);
+      answerCareGuide(selected.value);
+      guideUpdateNavigation();
+    }
+
+    function guideGoBack() {
+      const previous = careGuideHistory.pop();
+      if (!previous) return;
+      const log = document.getElementById('guide-log');
+      log.innerHTML = previous.html;
+      careGuideContext = previous.context;
+      const row = log.querySelector('.guide-choices:last-of-type');
+      const selectedButton = row && [...row.querySelectorAll('.guide-choice')].find(button => button.textContent === previous.label);
+      careGuideSelection = selectedButton ? { value: previous.value, label: previous.label, row } : null;
+      log.querySelectorAll('.guide-choice').forEach(button => {
+        button.addEventListener('click', () => guideChoose(button.dataset.value, button.textContent, button.parentElement, button));
+      });
+      guideUpdateNavigation();
+    }
 
     function toggleCareGuide(forceOpen) {
       const panel = document.getElementById('guide-panel');
@@ -1230,6 +1302,7 @@
           ['emergency', 'Emergency help'], ['doctor', 'I’m a doctor'], ['volunteer', 'Volunteer delivery'], ['ngo', 'Register an NGO']
         ]);
       }
+      guideUpdateNavigation();
       if (open) window.setTimeout(() => document.getElementById('guide-input').focus(), 50);
     }
 
@@ -1240,6 +1313,7 @@
       const log = document.getElementById('guide-log');
       log.appendChild(bubble);
       log.scrollTop = log.scrollHeight;
+      guideUpdateNavigation();
     }
 
     function guideUser(text) {
@@ -1266,15 +1340,14 @@
         button.type = 'button';
         button.className = 'guide-choice';
         button.textContent = label;
-        button.addEventListener('click', () => {
-          guideUser(label);
-          row.remove();
-          answerCareGuide(value);
-        });
+        button.dataset.value = value;
+        button.setAttribute('aria-pressed', 'false');
+        button.addEventListener('click', () => guideChoose(value, label, row, button));
         row.appendChild(button);
       });
       document.getElementById('guide-log').appendChild(row);
       document.getElementById('guide-log').scrollTop = document.getElementById('guide-log').scrollHeight;
+      guideUpdateNavigation();
     }
 
     function guideActions(items) {
@@ -1483,9 +1556,9 @@
       const input = document.getElementById('guide-input');
       const message = input.value.trim();
       if (!message) return;
-      guideUser(message);
       input.value = '';
-      answerCareGuide(message);
+      careGuideSelection = { value: message, label: message, row: null };
+      guideGoNext();
     }
 
     function toggleMobileMenu() {
