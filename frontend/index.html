@@ -184,6 +184,15 @@
     .guide-composer { display: flex; align-items: center; gap: 8px; padding: 11px; border-top: 1px solid #e7ece6; background: white; }
     .guide-composer input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid #dce5dc; border-radius: 12px; color: #18362b; background: #fbfcfa; font-size: 12px; }
     .guide-send { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 12px; color: #fff; background: #17795b; font-size: 17px; }
+    @keyframes guidePanelIn { from { opacity: 0; transform: translateY(18px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes guideMessageIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes guideRouteIn { from { opacity: .35; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes guideTargetGlow { 0% { outline: 0 solid rgb(31 133 92 / 0); background-color: transparent; } 35% { outline: 4px solid rgb(31 133 92 / .28); background-color: rgb(231 245 226 / .75); } 100% { outline: 0 solid rgb(31 133 92 / 0); background-color: transparent; } }
+    .guide-panel:not([hidden]) { animation: guidePanelIn .28s cubic-bezier(.2,.8,.2,1) both; }
+    .guide-message, .guide-note { animation: guideMessageIn .3s cubic-bezier(.2,.8,.2,1) both; }
+    .guide-choices, .guide-actions { animation: guideMessageIn .34s cubic-bezier(.2,.8,.2,1) both; }
+    .care-route-enter { animation: guideRouteIn .42s cubic-bezier(.2,.8,.2,1) both; }
+    .guide-target-arrival { animation: guideTargetGlow 1.45s ease-out both; border-radius: 14px; }
     @media (max-width: 480px) { .guide-launcher { right: 14px; bottom: 14px; } .guide-panel { right: 10px; bottom: 82px; height: min(580px, calc(100dvh - 104px)); } }
     @media (max-width: 1100px) {
       #tab-landing > div:first-child { grid-template-columns: 1fr; }
@@ -1283,17 +1292,34 @@
       document.getElementById('guide-log').scrollTop = document.getElementById('guide-log').scrollHeight;
     }
 
-    function guideOpenTab(tab, message) {
+    function guideOpenTab(tab, message, targetId) {
       guideBot(message);
       toggleCareGuide(false);
       switchTab(tab);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const main = document.querySelector('main');
+      main.classList.remove('care-route-enter');
+      void main.offsetWidth;
+      main.classList.add('care-route-enter');
+      window.setTimeout(() => main.classList.remove('care-route-enter'), 500);
+      if (targetId) {
+        window.setTimeout(() => {
+          const target = document.getElementById(targetId);
+          if (!target) return;
+          const header = document.querySelector('header');
+          const top = target.getBoundingClientRect().top + window.scrollY - (header?.offsetHeight || 72) - 24;
+          document.documentElement.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+          target.classList.add('guide-target-arrival');
+          window.setTimeout(() => target.classList.remove('guide-target-arrival'), 1500);
+        }, 380);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     }
 
-    function guideOpenProtectedTab(tab, role) {
+    function guideOpenProtectedTab(tab, role, targetId) {
       const currentRole = state.currentUser?.role;
       if (currentRole === role || currentRole === 'admin') {
-        guideOpenTab(tab, 'You’re signed in with the right access. Opening your workspace now.');
+        guideOpenTab(tab, 'You’re signed in with the right access. Opening the relevant section now.', targetId);
         return;
       }
       guideBot(`That workspace is restricted to ${role === 'doctor' ? 'verified doctors' : 'verified delivery volunteers'}. Sign in with an approved account to continue.`);
@@ -1341,7 +1367,7 @@
           guideBot('If someone may be in immediate danger, call 108 now. Medi Guide cannot contact emergency services or dispatch an ambulance. The site’s SOS console is a demo.');
           guideActions([
             { label: 'Call 108', style: 'emergency', run: () => { window.location.href = 'tel:108'; } },
-            { label: 'View SOS demo', run: () => guideOpenTab('sos', 'Opening the SOS demo console. It does not place a real emergency dispatch.') }
+            { label: 'View SOS demo', run: () => guideOpenTab('sos', 'Opening the SOS demo console. It does not place a real emergency dispatch.', 'form-simulate-sos') }
           ]);
         } else {
           guideBot('Understood. For non-emergency community resources, you can look at upcoming medical camps or public health alerts.');
@@ -1353,27 +1379,31 @@
       if (careGuideContext === 'camp') {
         careGuideContext = 'start';
         if (answer === 'organize') {
+          if (state.currentUser?.role === 'ngo_lead' || state.currentUser?.role === 'admin') {
+            guideOpenTab('map', 'Opening the camp planning form for your organization.', 'camp-form');
+            return;
+          }
           guideBot('Camp planning is available to verified NGO leads. I can take you to registration or sign-in.');
           guideActions([
             { label: 'Register NGO', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('signup'); } },
             { label: 'Sign in', run: () => { toggleCareGuide(false); openAuthModal('login'); } }
           ]);
         } else {
-          guideOpenTab('map', 'Opening the village map and upcoming public medical camps.');
+          guideOpenTab('map', 'Opening the village map and upcoming public medical camps.', 'camps-list');
         }
         return;
       }
 
       if (careGuideContext === 'village') {
         careGuideContext = 'start';
-        if (answer === 'camp') guideOpenTab('map', 'Opening the village map and outreach camps.');
-        else guideOpenTab('radar', 'Opening the public health and outbreak radar.');
+        if (answer === 'camp') guideOpenTab('map', 'Opening the village map and outreach camps.', 'camps-list');
+        else guideOpenTab('radar', 'Opening the public health and outbreak radar.', 'radar-section-grid');
         return;
       }
 
       if (careGuideContext === 'doctor') {
         careGuideContext = 'start';
-        if (answer === 'registered') guideOpenProtectedTab('doctor', 'doctor');
+        if (answer === 'registered') guideOpenProtectedTab('doctor', 'doctor', 'consultations-container');
         else {
           guideBot('Doctor access is limited to verified clinical accounts. You can sign in, or explore public village camps and health alerts.');
           guideActions([{ label: 'Doctor sign in', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('login'); } }]);
@@ -1384,7 +1414,7 @@
 
       if (careGuideContext === 'volunteer') {
         careGuideContext = 'start';
-        if (answer === 'approved') guideOpenProtectedTab('volunteer', 'volunteer');
+        if (answer === 'approved') guideOpenProtectedTab('volunteer', 'volunteer', 'medicine-requests-container');
         else {
           guideBot('Delivery access is limited to verified volunteers. Ask a participating NGO to onboard you, then sign in here.');
           guideActions([{ label: 'Volunteer sign in', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('login'); } }]);
@@ -1394,7 +1424,7 @@
 
       if (careGuideContext === 'ngo') {
         careGuideContext = 'start';
-        if (answer === 'lead') guideOpenProtectedTab('ngo-portal', 'ngo_lead');
+        if (answer === 'lead') guideOpenProtectedTab('ngo-portal', 'ngo_lead', 'ngo-members-tbody');
         else {
           guideBot('Create an NGO account to request organization access. Team management stays restricted to approved NGO leads.');
           guideActions([{ label: 'Register NGO', style: 'primary', run: () => { toggleCareGuide(false); openAuthModal('signup'); } }]);
@@ -1438,7 +1468,7 @@
           guideBot('This site guide does not collect symptoms or provide a patient consultation. Patients use the project’s configured Telegram intake. For an emergency, call 108. You can also find a public medical camp here.');
           guideActions([
             { label: 'Call 108', style: 'emergency', run: () => { window.location.href = 'tel:108'; } },
-            { label: 'Find a public camp', style: 'primary', run: () => guideOpenTab('map', 'Opening public medical camps.') }
+            { label: 'Find a public camp', style: 'primary', run: () => guideOpenTab('map', 'Opening public medical camps.', 'camps-list') }
           ]);
           break;
         default:
