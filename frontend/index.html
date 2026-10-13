@@ -47,6 +47,12 @@
     .home-guide-cta b, .home-guide-cta small { display: block; }
     .home-guide-cta b { font-size: 11px; }
     .home-guide-cta small { margin-top: 2px; color: #6c8173; font-size: 9px; }
+    .home-guide-section { display: grid; gap: 16px; padding: clamp(20px, 3vw, 34px); border: 1px solid #dfe9dc; border-radius: 24px; background: linear-gradient(145deg, #f8fbf5, #edf5e9); box-shadow: 0 12px 34px rgb(20 42 37 / .055); }
+    .home-guide-heading { display: flex; align-items: center; gap: 13px; }
+    .home-guide-heading .home-guide-robot { width: 48px; height: 48px; border-radius: 15px; font-size: 24px; }
+    .home-guide-heading h2 { margin: 0; color: #18362b; font: 800 clamp(21px, 2.7vw, 30px)/1.15 'Manrope', sans-serif; letter-spacing: -.045em; }
+    .home-guide-heading p { margin: 5px 0 0; color: #64776b; font-size: 12px; line-height: 1.55; }
+    .guide-panel.home-guide-inline { position: relative; inset: auto; z-index: auto; width: min(100%, 760px); height: 510px; margin: 0 auto; border-radius: 20px; box-shadow: 0 14px 36px rgb(13 35 28 / .11); animation: none; }
     .care-orbit { justify-self: end; width: min(100%, 440px); min-height: 390px; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; color: white; border: 1px solid rgb(255 255 255 / .2); border-radius: 24px; background: radial-gradient(ellipse at 83% 14%, rgb(151 204 135 / .2), transparent 34%), linear-gradient(150deg, #173d32, #102b24); box-shadow: 0 25px 55px rgb(22 62 44 / .18); overflow: hidden; }
     .network-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
     .network-card-head span:first-child { color: #d5e6d8; font-size: 9px; font-weight: 800; letter-spacing: .16em; }
@@ -164,6 +170,7 @@
     .workspace-card-icon { transition: transform .24s ease; }
     .workspace-card:hover .workspace-card-icon { transform: translateY(-2px) rotate(-4deg); }
     .guide-launcher { position: fixed; right: 24px; bottom: 24px; z-index: 70; display: flex; align-items: center; gap: 11px; padding: 9px 17px 9px 9px; border: 1px solid rgb(255 255 255 / .2); border-radius: 999px; color: #fff; background: linear-gradient(135deg, #1b8064, #123f34); box-shadow: 0 14px 38px rgb(13 52 39 / .28); cursor: pointer; }
+    .guide-launcher[hidden] { display: none; }
     .guide-launcher:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgb(13 52 39 / .34); }
     .guide-robot { display: grid; place-items: center; width: 43px; height: 43px; border: 1px solid rgb(255 255 255 / .38); border-radius: 50%; color: #153a30; background: linear-gradient(145deg, #dcf7c2, #a8e9b7); font-size: 21px; box-shadow: inset 0 1px 3px rgb(255 255 255 / .8); }
     .guide-launch-copy { text-align: left; line-height: 1.25; }
@@ -324,7 +331,7 @@
             <button onclick="switchTab('radar')" class="bg-red-500/20 hover:bg-red-500/30 text-red-200 font-semibold px-6 py-3 rounded-xl transition border border-red-500/40 flex items-center gap-2">
               Explore community health
             </button>
-            <button onclick="toggleCareGuide(true)" class="home-guide-cta" aria-controls="guide-panel">
+            <button onclick="goToHomeGuide()" class="home-guide-cta" aria-controls="guide-panel">
               <span class="home-guide-robot" aria-hidden="true">🤖</span>
               <span><b>Ask Medi Guide</b><small>Find the right next step</small></span>
               <span aria-hidden="true">↗</span>
@@ -354,6 +361,17 @@
           <div class="network-card-foot"><span class="network-stage"><b>01 · Listen</b>Patient intake</span><span class="network-stage"><b>02 · Review</b>Clinical care</span><span class="network-stage"><b>03 · Reach</b>Local outreach</span></div>
         </aside>
       </div>
+
+      <section id="home-guide-section" class="home-guide-section" aria-labelledby="home-guide-title">
+        <div class="home-guide-heading">
+          <span class="home-guide-robot" aria-hidden="true">🤖</span>
+          <div>
+            <h2 id="home-guide-title">Tell Medi what you need.</h2>
+            <p>Choose an option or type a short request. Medi will guide you to the right place.</p>
+          </div>
+        </div>
+        <div id="home-guide-host"></div>
+      </section>
 
       <!-- Impact Stats Grid -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -1299,7 +1317,30 @@
       guideUpdateNavigation();
     }
 
-    function toggleCareGuide(forceOpen) {
+    function setCareGuideHomeMode(isHome) {
+      const panel = document.getElementById('guide-panel');
+      const launcher = document.getElementById('guide-launcher');
+      const host = document.getElementById('home-guide-host');
+      if (!panel || !launcher || !host) return;
+      if (isHome) {
+        host.appendChild(panel);
+        panel.classList.add('home-guide-inline');
+        launcher.hidden = true;
+        toggleCareGuide(true, false);
+      } else {
+        if (panel.parentElement === host) document.body.appendChild(panel);
+        panel.classList.remove('home-guide-inline');
+        if (!panel.hidden) toggleCareGuide(false, false);
+        launcher.hidden = false;
+      }
+    }
+
+    function goToHomeGuide() {
+      document.getElementById('home-guide-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      toggleCareGuide(true, false);
+    }
+
+    function toggleCareGuide(forceOpen, focusInput = true) {
       const panel = document.getElementById('guide-panel');
       const launcher = document.getElementById('guide-launcher');
       const open = typeof forceOpen === 'boolean' ? forceOpen : panel.hidden;
@@ -1314,7 +1355,7 @@
         ]);
       }
       guideUpdateNavigation();
-      if (open) window.setTimeout(() => document.getElementById('guide-input').focus(), 50);
+      if (open && focusInput) window.setTimeout(() => document.getElementById('guide-input').focus(), 50);
     }
 
     function guideBot(text) {
@@ -1852,6 +1893,7 @@
       const targetBtn = document.getElementById(`nav-${tabName === 'ngo-portal' ? 'ngo' : tabName}`);
       if (targetEl) targetEl.classList.remove('hidden');
       if (targetBtn) targetBtn.classList.add('tab-active');
+      setCareGuideHomeMode(tabName === 'landing');
       const mobileNav = document.getElementById('main-nav');
       if (mobileNav.classList.contains('mobile-open')) toggleMobileMenu();
 
