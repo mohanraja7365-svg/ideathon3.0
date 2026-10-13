@@ -18,6 +18,10 @@
     body { background: var(--paper) !important; color: var(--ink) !important; font-family: 'DM Sans', system-ui, sans-serif !important; }
     h1, h2, h3, h4, .font-extrabold { font-family: 'Manrope', 'DM Sans', sans-serif; }
     header { background: rgb(255 255 255 / .92) !important; border-color: var(--line) !important; box-shadow: 0 4px 24px rgb(24 55 45 / .045) !important; backdrop-filter: blur(18px); }
+    .theme-toggle { display: grid; place-items: center; flex: 0 0 40px; width: 40px; height: 40px; border: 1px solid #dce6dc; border-radius: 12px; color: #345c45; background: #f8faf6; }
+    .theme-toggle:hover { border-color: #a8c2a8; background: #eef5e9; transform: translateY(-1px); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .theme-sun { display: none; }
     header > div { max-width: 1480px !important; }
     header > div > div:first-child > div:first-child { background: var(--ink) !important; border-radius: 14px !important; box-shadow: none !important; }
     header > div > div:first-child span:first-child { letter-spacing: -.04em; }
@@ -42,6 +46,7 @@
     #tab-landing > div:first-child button:first-child { background: #19785b !important; color: white !important; box-shadow: 0 9px 24px rgb(25 120 91 / .2) !important; }
     #tab-landing > div:first-child button:nth-child(2) { color: #315d45 !important; background: #fff !important; border: 1px solid #d8e5d2 !important; }
     .brand-mark { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(255 255 255 / .2); border-radius: 15px; background: radial-gradient(circle at 28% 18%, #4ba982, transparent 42%), linear-gradient(145deg, #1a7255, #12382e); box-shadow: 0 8px 20px rgb(20 81 57 / .24), inset 0 1px 0 rgb(255 255 255 / .24); }
+    header > div > div:first-child > button.brand-mark { border-radius: 15px !important; background: radial-gradient(circle at 28% 18%, #4ba982, transparent 42%), linear-gradient(145deg, #1a7255, #12382e) !important; box-shadow: 0 8px 20px rgb(20 81 57 / .24), inset 0 1px 0 rgb(255 255 255 / .24) !important; }
     .brand-mark:hover { transform: translateY(-2px) rotate(-3deg); box-shadow: 0 12px 24px rgb(20 81 57 / .3), inset 0 1px 0 rgb(255 255 255 / .3); }
     .brand-mark svg { width: 27px; height: 27px; filter: drop-shadow(0 2px 3px rgb(5 34 22 / .2)); }
     .home-guide-cta { display: inline-flex; align-items: center; gap: 10px; padding: 5px 13px 5px 6px; border: 1px solid #d8e5d2; border-radius: 14px; color: #234d3a; background: #fff; text-align: left; box-shadow: 0 8px 22px rgb(36 71 46 / .08); }
@@ -108,6 +113,50 @@
     .workspace-carousel-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; background: #cbd8cb; transition: width .25s, background .25s; }
     .workspace-carousel-dot[aria-current="true"] { width: 25px; background: #19785b; }
     .workspace-carousel-status { min-width: 94px; color: #61776a; font-size: 10px; font-weight: 800; text-align: right; letter-spacing: .08em; }
+    body[data-theme="dark"] { --ink: #e8f0eb; --muted: #a7b9ad; --green: #68c49a; --paper: #101916; --line: #2b3b34; --card: #19251f; color-scheme: dark; }
+    body[data-theme="dark"] header { background: rgb(19 31 26 / .94) !important; border-color: #2a3b33 !important; }
+    body[data-theme="dark"] header > div > div:first-child > button.brand-mark { background: radial-gradient(circle at 28% 18%, #4ba982, transparent 42%), linear-gradient(145deg, #1a7255, #12382e) !important; }
+    body[data-theme="dark"] header .text-slate-900, body[data-theme="dark"] header .text-slate-800 { color: #e8f0eb !important; }
+    body[data-theme="dark"] header .text-slate-500, body[data-theme="dark"] header .text-slate-600 { color: #a8b9ae !important; }
+    body[data-theme="dark"] #auth-logged-out button:first-child, body[data-theme="dark"] #auth-logged-in button { color: #e7efe9 !important; border-color: #405047 !important; background: #202d26 !important; }
+    body[data-theme="dark"] #auth-logged-out button:last-child { color: #fff !important; border-color: #287855 !important; background: #287855 !important; }
+    body[data-theme="dark"] .theme-toggle { color: #f5d980; border-color: #3a4b41; background: #202e27; }
+    body[data-theme="dark"] .theme-toggle .theme-sun { display: block; }
+    body[data-theme="dark"] .theme-toggle .theme-moon { display: none; }
+    body[data-theme="dark"] #main-nav button { color: #b7c8bd !important; }
+    body[data-theme="dark"] #main-nav button:hover { color: #f1f7f3 !important; background: #293b32; }
+    body[data-theme="dark"] #main-nav button.tab-active { color: #8bdbb0 !important; background: #20382c; }
+    body[data-theme="dark"] #main-nav { background: #16221c; border-color: #2b3b34; }
+    body[data-theme="dark"] #mobile-menu-toggle { color: #e0ebe3 !important; border-color: #3b4c42 !important; background: #1d2a24 !important; }
+    body[data-theme="dark"] .medical-note { color: #c7c2a2; border-color: #514b32; background: #252519; }
+    body[data-theme="dark"] .medical-note strong { color: #ebe3ba; }
+    body[data-theme="dark"] main { color: #e5eee8 !important; }
+    body[data-theme="dark"] main .bg-white { color: #e5eee8 !important; border-color: #2b3b34 !important; background: #19251f !important; }
+    body[data-theme="dark"] main .text-slate-900, body[data-theme="dark"] main .text-slate-800 { color: #e5eee8 !important; }
+    body[data-theme="dark"] main .text-slate-700, body[data-theme="dark"] main .text-slate-600 { color: #c2d0c7 !important; }
+    body[data-theme="dark"] main .text-slate-500, body[data-theme="dark"] main .text-slate-400 { color: #9fafa4 !important; }
+    body[data-theme="dark"] #tab-landing > div:first-child { border-color: #30463a; background: radial-gradient(ellipse at 11% 100%, rgb(59 111 74 / .28), transparent 46%), linear-gradient(120deg, #192b23 0%, #1a3026 52%, #20372b 100%) !important; }
+    body[data-theme="dark"] #tab-landing h1 { color: #edf5ee !important; }
+    body[data-theme="dark"] #tab-landing > div:first-child p { color: #bdcec2 !important; }
+    body[data-theme="dark"] #tab-landing > div:first-child span:first-child { color: #c3e8c4 !important; border-color: #426447 !important; background: #2a4630 !important; }
+    body[data-theme="dark"] #tab-landing > div:nth-child(2) > div { background: linear-gradient(145deg, #1b2922 58%, #202f26) !important; }
+    body[data-theme="dark"] #tab-landing > div:last-child { border-color: #2b3b34 !important; background: #17221d !important; }
+    body[data-theme="dark"] #tab-landing > div:last-child .grid > div { border-color: #2d3c35 !important; background: #202c26 !important; }
+    body[data-theme="dark"] .workspace-heading-row h2, body[data-theme="dark"] .home-guide-heading h2 { color: #e8f0eb; }
+    body[data-theme="dark"] .workspace-heading-row p, body[data-theme="dark"] .home-guide-heading p { color: #a8b9ae; }
+    body[data-theme="dark"] .workspace-count { color: #c1e4ca; border-color: #354b3a; background: #23362a; }
+    body[data-theme="dark"] .workspace-carousel-viewport { border-color: #2c3c34; background: #17231e; }
+    body[data-theme="dark"] .workspace-slide-select { color: #e7efe9; background: radial-gradient(circle at 85% 20%, #24352a 0, #1b2922 42%, #17231e 75%); }
+    body[data-theme="dark"] .workspace-slide-copy strong { color: #e8f0eb; }
+    body[data-theme="dark"] .workspace-slide-copy p { color: #b2c1b7; }
+    body[data-theme="dark"] .workspace-slide-kicker { color: #b1c7b8; }
+    body[data-theme="dark"] .workspace-slide-hint { color: #d2e8d5; border-color: #385040; background: #26392c; }
+    body[data-theme="dark"] .workspace-carousel-arrow { color: #d5ead9; border-color: #3a4b40; background: #202e27; }
+    body[data-theme="dark"] .workspace-carousel-status { color: #b6c9bc; }
+    body[data-theme="dark"] .home-guide-section { border-color: #2b3b34; background: linear-gradient(145deg, #1b2922, #202f26); }
+    body[data-theme="dark"] input:not(#guide-input), body[data-theme="dark"] select, body[data-theme="dark"] textarea { color: #e7efe9 !important; background-color: #1d2a24 !important; border-color: #3b4c42 !important; }
+    body[data-theme="dark"] #modal-auth > div, body[data-theme="dark"] #modal-prescribe > div, body[data-theme="dark"] #modal-add-member > div, body[data-theme="dark"] #modal-sos > div { color: #e7efe9; background: #18241e !important; }
+    @media (prefers-reduced-motion: reduce) { .workspace-carousel-track { transition: none; } }
     #modal-auth > div, #modal-prescribe > div, #modal-add-member > div, #modal-sos > div { border: 1px solid rgb(255 255 255 / .75); border-radius: 22px !important; box-shadow: 0 26px 90px rgb(9 28 21 / .3) !important; }
     #tab-doctor > div:first-child, #tab-map > div:first-child, #tab-volunteer > div:first-child, #tab-ngo-portal > div:first-child { padding: 26px !important; border: 1px solid var(--line) !important; border-radius: 22px !important; background: linear-gradient(135deg, #fff 0%, #f8fbf6 100%) !important; box-shadow: 0 10px 30px rgb(20 42 37 / .045) !important; }
     #tab-doctor h2, #tab-map h2, #tab-volunteer h2, #tab-ngo-portal h2 { color: var(--ink) !important; font-family: 'Manrope', sans-serif; letter-spacing: -.045em; }
@@ -301,6 +350,11 @@
 
       <!-- Auth State Actions (Sign In / Register / User Pill) -->
       <div class="flex items-center gap-2 pl-2">
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch to dark theme" onclick="toggleTheme()">
+          <svg class="theme-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.3 15.1A8.2 8.2 0 0 1 8.9 3.7 8.5 8.5 0 1 0 20.3 15.1Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16.5 4v4m-2-2h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg class="theme-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span class="sr-only">Toggle color theme</span>
+        </button>
         <div id="auth-logged-out" class="flex items-center gap-2">
           <button onclick="openAuthModal('login')" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 hover:bg-slate-50 transition">
             Sign In
@@ -1955,6 +2009,30 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function applyTheme(theme) {
+      const activeTheme = theme === 'dark' ? 'dark' : 'light';
+      document.body.dataset.theme = activeTheme;
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        const switchLabel = activeTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+        toggle.setAttribute('aria-label', switchLabel);
+        toggle.title = switchLabel;
+        toggle.setAttribute('aria-pressed', String(activeTheme === 'dark'));
+      }
+    }
+
+    function initTheme() {
+      let savedTheme = 'light';
+      try { savedTheme = localStorage.getItem('medisetu-theme') || 'light'; } catch (_) {}
+      applyTheme(savedTheme);
+    }
+
+    function toggleTheme() {
+      const nextTheme = document.body.dataset.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(nextTheme);
+      try { localStorage.setItem('medisetu-theme', nextTheme); } catch (_) {}
+    }
+
     // --- TAB SWITCHING WITH STRICT RBAC ENFORCEMENT ---
     function switchTab(tabName) {
       // 1. Strict Security Guard: Block unauthorized tabs based on active role
@@ -2125,6 +2203,7 @@
 
     // --- DATA FETCHING ---
     async function initApp() {
+      initTheme();
       initWorkspaceCarousel();
       checkServiceStatus();
       updateAuthNavbar();
