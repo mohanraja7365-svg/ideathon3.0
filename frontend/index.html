@@ -79,17 +79,32 @@
     .workspace-heading-row h2 { margin: 0; color: var(--ink); font: 800 clamp(23px, 3vw, 34px)/1.1 'Manrope', sans-serif; letter-spacing: -.05em; }
     .workspace-heading-row p { margin-top: 8px; color: var(--muted); font-size: 13px; }
     .workspace-count { flex: 0 0 auto; padding: 8px 11px; border: 1px solid #dce8d7; border-radius: 999px; color: #527257; background: #eef5e9; font-size: 10px; font-weight: 700; }
-    .workspace-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
-    .workspace-card { display: flex; flex-direction: column; align-items: flex-start; min-height: 242px; padding: 21px; text-align: left; border: 1px solid var(--line); border-radius: 19px; background: white; box-shadow: 0 8px 24px rgb(20 42 37 / .035); }
-    .workspace-card:hover { transform: translateY(-4px); box-shadow: 0 18px 36px rgb(20 42 37 / .1); }
-    .workspace-card-icon { display: grid; place-items: center; width: 40px; height: 40px; margin-bottom: 17px; border-radius: 13px; background: #eaf4e7; color: #26734f; font-size: 20px; }
-    .workspace-card-kicker { color: #75857b; font-size: 9px; font-weight: 800; letter-spacing: .13em; }
-    .workspace-card strong { margin-top: 8px; color: var(--ink); font: 750 16px/1.25 'Manrope', sans-serif; letter-spacing: -.025em; }
-    .workspace-card > span:nth-last-child(2) { margin-top: 7px; color: #718078; font-size: 11px; line-height: 1.55; }
-    .workspace-card-link { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: auto; padding-top: 17px; color: var(--green); font-size: 11px; font-weight: 800; }
-    .workspace-emergency .workspace-card-icon { color: #b45344; background: #fff0e8; }
-    .workspace-community .workspace-card-icon { color: #82621c; background: #fbf2d9; }
-    .workspace-delivery .workspace-card-icon { color: #5265a0; background: #edf0ff; }
+    .workspace-carousel { display: grid; gap: 15px; }
+    .workspace-carousel-viewport { overflow: hidden; border: 1px solid #dfe8df; border-radius: 24px; background: white; box-shadow: 0 14px 34px rgb(20 42 37 / .055); }
+    .workspace-carousel-track { display: flex; transition: transform .55s cubic-bezier(.22,.78,.25,1); will-change: transform; }
+    .workspace-slide { flex: 0 0 100%; min-width: 0; }
+    .workspace-slide-select { display: grid; grid-template-columns: minmax(0, 1fr) minmax(220px, .78fr); align-items: center; gap: clamp(18px, 4vw, 52px); width: 100%; min-height: 310px; padding: clamp(23px, 5vw, 52px); text-align: left; background: radial-gradient(circle at 85% 20%, #f1f7ed 0, #f8faf7 42%, #fff 75%); }
+    .workspace-slide-select:hover .workspace-slide-art { transform: translateY(-4px) rotate(-1deg); }
+    .workspace-slide-copy { display: grid; justify-items: start; }
+    .workspace-slide-kicker { color: #75857b; font-size: 10px; font-weight: 850; letter-spacing: .15em; }
+    .workspace-slide-copy strong { margin-top: 11px; color: var(--ink); font: 800 clamp(23px, 3.2vw, 35px)/1.14 'Manrope', sans-serif; letter-spacing: -.045em; }
+    .workspace-slide-copy p { max-width: 480px; margin: 12px 0 0; color: #718078; font-size: 13px; line-height: 1.7; }
+    .workspace-slide-hint { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; padding: 9px 12px; border: 1px solid #e1e9df; border-radius: 999px; color: #426a51; background: #f6faf3; font-size: 10px; font-weight: 750; }
+    .workspace-slide-art { display: grid; place-items: center; min-height: 205px; padding: 18px; border: 1px solid rgb(219 232 213 / .9); border-radius: 28px; background: linear-gradient(145deg, #f0f7eb, #e3f0df); box-shadow: inset 0 1px 0 #fff, 0 20px 38px rgb(33 71 49 / .08); transition: transform .32s ease; }
+    .workspace-slide-art svg { width: min(100%, 280px); height: 190px; }
+    .workspace-clinical .workspace-slide-art { background: linear-gradient(145deg, #e7f5e8, #d8eddf); }
+    .workspace-emergency .workspace-slide-art { background: linear-gradient(145deg, #fff0e9, #fbe0d6); }
+    .workspace-community .workspace-slide-art { background: linear-gradient(145deg, #fbf4df, #f1e7c4); }
+    .workspace-delivery .workspace-slide-art { background: linear-gradient(145deg, #edf0ff, #e1e6fb); }
+    .workspace-slide-action { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 25px clamp(23px, 5vw, 52px); padding: 12px 16px; border: 0; border-radius: 12px; color: #fff; background: #19785b; font-size: 11px; font-weight: 800; box-shadow: 0 8px 20px rgb(25 120 91 / .17); }
+    .workspace-slide-action:hover { background: #12674d; transform: translateY(-2px); }
+    .workspace-carousel-controls { display: flex; align-items: center; gap: 9px; }
+    .workspace-carousel-arrow { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid #dce7db; border-radius: 13px; color: #285a40; background: #fff; font-size: 20px; }
+    .workspace-carousel-arrow:hover { border-color: #a6c6a5; background: #f2f8ee; }
+    .workspace-carousel-dots { display: flex; align-items: center; gap: 7px; margin: 0 auto; }
+    .workspace-carousel-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 99px; background: #cbd8cb; transition: width .25s, background .25s; }
+    .workspace-carousel-dot[aria-current="true"] { width: 25px; background: #19785b; }
+    .workspace-carousel-status { min-width: 94px; color: #61776a; font-size: 10px; font-weight: 800; text-align: right; letter-spacing: .08em; }
     #modal-auth > div, #modal-prescribe > div, #modal-add-member > div, #modal-sos > div { border: 1px solid rgb(255 255 255 / .75); border-radius: 22px !important; box-shadow: 0 26px 90px rgb(9 28 21 / .3) !important; }
     #tab-doctor > div:first-child, #tab-map > div:first-child, #tab-volunteer > div:first-child, #tab-ngo-portal > div:first-child { padding: 26px !important; border: 1px solid var(--line) !important; border-radius: 22px !important; background: linear-gradient(135deg, #fff 0%, #f8fbf6 100%) !important; box-shadow: 0 10px 30px rgb(20 42 37 / .045) !important; }
     #tab-doctor h2, #tab-map h2, #tab-volunteer h2, #tab-ngo-portal h2 { color: var(--ink) !important; font-family: 'Manrope', sans-serif; letter-spacing: -.045em; }
@@ -120,7 +135,7 @@
       #tab-landing > div:first-child button { padding: 10px 13px !important; }
       .care-orbit { justify-self: stretch; width: 100%; min-height: 0; }
       #tab-landing > div:nth-child(2) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-      .workspace-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .workspace-slide-select { grid-template-columns: minmax(0, 1fr) minmax(190px, .7fr); gap: 18px; }
       #tab-landing > div:nth-child(2) > div { min-height: 126px; padding: 16px !important; }
       #tab-landing > div:last-child .grid > div { min-height: 0; }
       main { padding: 18px 14px 30px !important; }
@@ -128,7 +143,6 @@
     @media (max-width: 390px) {
       #auth-logged-out button:last-child { display: none; }
       #tab-landing > div:nth-child(2) { grid-template-columns: 1fr !important; }
-      .workspace-grid { grid-template-columns: 1fr; }
       .workspace-heading-row { align-items: flex-start; }
       .workspace-count { display: none; }
     }
@@ -165,10 +179,13 @@
       pointer-events: none;
     }
     .network-illustration { position: relative; z-index: 1; filter: drop-shadow(0 10px 18px rgb(0 0 0 / .08)); }
-    .workspace-card { transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease, background .24s ease !important; }
-    .workspace-card:hover { border-color: #cbdcc8; background: linear-gradient(145deg, #fff, #f7faf4); }
-    .workspace-card-icon { transition: transform .24s ease; }
-    .workspace-card:hover .workspace-card-icon { transform: translateY(-2px) rotate(-4deg); }
+    @media (max-width: 640px) {
+      .workspace-slide-select { grid-template-columns: 1fr; gap: 17px; min-height: 0; padding: 23px; }
+      .workspace-slide-art { min-height: 170px; }
+      .workspace-slide-art svg { height: 160px; }
+      .workspace-slide-action { margin-left: 23px; }
+      .workspace-carousel-status { min-width: 74px; font-size: 9px; }
+    }
     .guide-launcher { position: fixed; right: 24px; bottom: 24px; z-index: 70; display: flex; align-items: center; gap: 11px; padding: 9px 17px 9px 9px; border: 1px solid rgb(255 255 255 / .2); border-radius: 999px; color: #fff; background: linear-gradient(135deg, #1b8064, #123f34); box-shadow: 0 14px 38px rgb(13 52 39 / .28); cursor: pointer; }
     .guide-launcher[hidden] { display: none; }
     .guide-launcher:hover { transform: translateY(-3px); box-shadow: 0 18px 44px rgb(13 52 39 / .34); }
@@ -362,17 +379,6 @@
         </aside>
       </div>
 
-      <section id="home-guide-section" class="home-guide-section" aria-labelledby="home-guide-title">
-        <div class="home-guide-heading">
-          <span class="home-guide-robot" aria-hidden="true">🤖</span>
-          <div>
-            <h2 id="home-guide-title">Tell Medi what you need.</h2>
-            <p>Choose an option or type a short request. Medi will guide you to the right place.</p>
-          </div>
-        </div>
-        <div id="home-guide-host"></div>
-      </section>
-
       <!-- Impact Stats Grid -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -397,32 +403,65 @@
         </div>
       </div>
 
+      <section id="home-guide-section" class="home-guide-section" aria-labelledby="home-guide-title">
+        <div class="home-guide-heading">
+          <span class="home-guide-robot" aria-hidden="true">🤖</span>
+          <div>
+            <h2 id="home-guide-title">Tell Medi what you need.</h2>
+            <p>Choose an option or type a short request. Medi will guide you to the right place.</p>
+          </div>
+        </div>
+        <div id="home-guide-host"></div>
+      </section>
+
       <section class="workspace-section" aria-labelledby="workspace-heading">
         <div class="workspace-heading-row">
           <div>
             <div class="workspace-eyebrow">Find your next step</div>
             <h2 id="workspace-heading">Everything in one care network.</h2>
-            <p>Choose a workspace to explore. Sign-in is only needed for protected clinical and team actions.</p>
+            <p>Explore each care sector. Select a card to slide to the next option, or open its workspace.</p>
           </div>
-          <span class="workspace-count">4 ways to help</span>
+          <span class="workspace-count" id="workspace-count">01 / 04 · CLINICAL</span>
         </div>
-        <div class="workspace-grid">
-          <button class="workspace-card workspace-clinical" onclick="handleHeroDoctorClick()">
-            <span class="workspace-card-icon" aria-hidden="true">✚</span><span class="workspace-card-kicker">CLINICAL TEAM</span>
-            <strong>Review patient cases</strong><span>Prioritized consultations, secure calls, and clinician-led prescriptions.</span><span class="workspace-card-link">Doctor workspace <b aria-hidden="true">↗</b></span>
-          </button>
-          <button class="workspace-card workspace-emergency" onclick="switchTab('sos')">
-            <span class="workspace-card-icon" aria-hidden="true">⌁</span><span class="workspace-card-kicker">EMERGENCY RESPONSE</span>
-            <strong>Coordinate a response</strong><span>Emergency dispatch details and low-bandwidth SMS support.</span><span class="workspace-card-link">Open response console <b aria-hidden="true">↗</b></span>
-          </button>
-          <button class="workspace-card workspace-community" onclick="switchTab('map')">
-            <span class="workspace-card-icon" aria-hidden="true">◎</span><span class="workspace-card-kicker">COMMUNITY HEALTH</span>
-            <strong>Explore villages & camps</strong><span>See outreach locations, upcoming camps, and local health signals.</span><span class="workspace-card-link">Explore the map <b aria-hidden="true">↗</b></span>
-          </button>
-          <button class="workspace-card workspace-delivery" onclick="openAuthModal('login')">
-            <span class="workspace-card-icon" aria-hidden="true">⇢</span><span class="workspace-card-kicker">LOCAL OUTREACH</span>
-            <strong>Support medicine delivery</strong><span>Verified volunteers handle pharmacy pickup and OTP-confirmed handover.</span><span class="workspace-card-link">Volunteer sign in <b aria-hidden="true">↗</b></span>
-          </button>
+        <div class="workspace-carousel" aria-label="Care sectors">
+          <div class="workspace-carousel-viewport">
+            <div class="workspace-carousel-track" id="workspace-carousel-track">
+              <article class="workspace-slide workspace-clinical" data-sector="Clinical team">
+                <button class="workspace-slide-select" type="button" onclick="moveWorkspaceSlide(1)" aria-label="Clinical team selected. Click to see the next care sector.">
+                  <span class="workspace-slide-copy"><span class="workspace-slide-kicker">01 · CLINICAL TEAM</span><strong>Review patient cases</strong><p>Prioritized consultations, secure calls, and clinician-led prescriptions.</p><span class="workspace-slide-hint">View next sector <span aria-hidden="true">→</span></span></span>
+                  <span class="workspace-slide-art"><svg viewBox="0 0 280 190" role="img" aria-label="Doctor reviewing a patient care chart"><path d="M30 151h220" stroke="#8fb59b" stroke-width="3" stroke-linecap="round"/><rect x="151" y="29" width="91" height="108" rx="15" fill="#fff"/><rect x="164" y="44" width="65" height="9" rx="4.5" fill="#dceee0"/><rect x="164" y="64" width="43" height="7" rx="3.5" fill="#ecf2eb"/><rect x="164" y="80" width="56" height="7" rx="3.5" fill="#ecf2eb"/><circle cx="211" cy="111" r="13" fill="#e4f3dc"/><path d="M205 111h12m-6-6v12" stroke="#26734f" stroke-width="3" stroke-linecap="round"/><circle cx="91" cy="71" r="24" fill="#f5cba7"/><path d="M66 69c1-21 13-33 28-33 17 0 28 11 28 30-10-2-17-7-22-14-7 10-19 15-34 17Z" fill="#25483a"/><path d="M48 150c3-34 18-52 43-52s41 18 44 52" fill="#438b68"/><path d="M82 105h18l-4 17h-10z" fill="#fff"/><path d="M91 116v21m-8-12h16" stroke="#e7f3e9" stroke-width="3" stroke-linecap="round"/><path d="M117 110c15 0 24 7 31 17" fill="none" stroke="#88b99a" stroke-width="3" stroke-linecap="round"/></svg></span>
+                </button>
+                <button class="workspace-slide-action" type="button" onclick="handleHeroDoctorClick()">Open doctor workspace <span aria-hidden="true">↗</span></button>
+              </article>
+              <article class="workspace-slide workspace-emergency" data-sector="Emergency response">
+                <button class="workspace-slide-select" type="button" onclick="moveWorkspaceSlide(1)" aria-label="Emergency response selected. Click to see the next care sector.">
+                  <span class="workspace-slide-copy"><span class="workspace-slide-kicker">02 · EMERGENCY RESPONSE</span><strong>Coordinate a response</strong><p>Review emergency dispatch details and low-bandwidth SMS support from one place.</p><span class="workspace-slide-hint">View next sector <span aria-hidden="true">→</span></span></span>
+                  <span class="workspace-slide-art"><svg viewBox="0 0 280 190" role="img" aria-label="Emergency response vehicle and first-aid symbol"><path d="M34 150h210" stroke="#c7a49a" stroke-width="3" stroke-linecap="round"/><path d="M59 89h112a12 12 0 0 1 12 12v42H47v-42a12 12 0 0 1 12-12Z" fill="#fff"/><path d="M183 111h30l25 25v7h-55z" fill="#f5c9bc"/><path d="M186 116h22l16 17h-38z" fill="#e8f2ed"/><circle cx="83" cy="146" r="14" fill="#29473a"/><circle cx="83" cy="146" r="6" fill="#fff"/><circle cx="210" cy="146" r="14" fill="#29473a"/><circle cx="210" cy="146" r="6" fill="#fff"/><rect x="93" y="99" width="42" height="34" rx="8" fill="#c9493d"/><path d="M114 106v20m-10-10h20" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M73 78c8-18 25-28 42-28" fill="none" stroke="#d97a67" stroke-width="4" stroke-linecap="round"/><circle cx="218" cy="62" r="25" fill="#fff"/><path d="M218 49v26m-13-13h26" stroke="#ca5142" stroke-width="6" stroke-linecap="round"/></svg></span>
+                </button>
+                <button class="workspace-slide-action" type="button" onclick="switchTab('sos')">Open response console <span aria-hidden="true">↗</span></button>
+              </article>
+              <article class="workspace-slide workspace-community" data-sector="Community health">
+                <button class="workspace-slide-select" type="button" onclick="moveWorkspaceSlide(1)" aria-label="Community health selected. Click to see the next care sector.">
+                  <span class="workspace-slide-copy"><span class="workspace-slide-kicker">03 · COMMUNITY HEALTH</span><strong>Explore villages & camps</strong><p>See outreach locations, upcoming camps, and local health signals across the community.</p><span class="workspace-slide-hint">View next sector <span aria-hidden="true">→</span></span></span>
+                  <span class="workspace-slide-art"><svg viewBox="0 0 280 190" role="img" aria-label="Map connecting rural villages and a mobile health camp"><path d="M30 150c33-44 64-46 98-18 29 24 55 25 83-6 14-16 26-26 42-26" fill="none" stroke="#9aac6b" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/><path d="M30 150h220" stroke="#cabb8b" stroke-width="3" stroke-linecap="round"/><circle cx="63" cy="122" r="27" fill="#fff"/><path d="M47 123 63 110l16 13v16H47z" fill="#b68c35"/><path d="M59 139v-11h8v11" fill="none" stroke="#fff4d3" stroke-width="2"/><circle cx="154" cy="91" r="32" fill="#f8ffff"/><path d="m131 91 23-19 23 19v24h-46z" fill="#548b68"/><path d="M148 115V99h12v16m-13-21h13" fill="none" stroke="#fff" stroke-width="3"/><circle cx="226" cy="76" r="25" fill="#fff"/><path d="M214 70h24v17h-24z" fill="#d29343"/><path d="M219 65v10m14-10v10m-8 12v-7h5v7" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="63" cy="122" r="38" fill="none" stroke="#c7a959" stroke-opacity=".25" stroke-width="2"/><circle cx="154" cy="91" r="43" fill="none" stroke="#5a9972" stroke-opacity=".2" stroke-width="2"/></svg></span>
+                </button>
+                <button class="workspace-slide-action" type="button" onclick="switchTab('map')">Explore villages & camps <span aria-hidden="true">↗</span></button>
+              </article>
+              <article class="workspace-slide workspace-delivery" data-sector="Local outreach">
+                <button class="workspace-slide-select" type="button" onclick="moveWorkspaceSlide(1)" aria-label="Local outreach selected. Click to see the next care sector.">
+                  <span class="workspace-slide-copy"><span class="workspace-slide-kicker">04 · LOCAL OUTREACH</span><strong>Support medicine delivery</strong><p>Verified volunteers coordinate pharmacy pickup and confirmed handover to patients.</p><span class="workspace-slide-hint">View next sector <span aria-hidden="true">→</span></span></span>
+                  <span class="workspace-slide-art"><svg viewBox="0 0 280 190" role="img" aria-label="Volunteer carrying a medicine delivery bag"><path d="M32 151h216" stroke="#9ea8ce" stroke-width="3" stroke-linecap="round"/><circle cx="111" cy="59" r="22" fill="#f1c6a3"/><path d="M89 58c1-18 11-29 25-29 13 0 21 9 21 25-11-1-19-7-24-13-4 9-11 14-22 17Z" fill="#2d4357"/><path d="M78 151c3-44 14-69 34-69 20 0 31 25 34 69" fill="#7180c4"/><path d="M99 89h27l-4 17h-19z" fill="#f5f7ff"/><path d="M112 101v26m-10-13h20" stroke="#7180c4" stroke-width="3" stroke-linecap="round"/><path d="M155 99h59v45h-59z" rx="9" fill="#e7b94f"/><path d="M155 112h59v32h-59z" fill="#d7a63d"/><path d="M171 99v-8c0-10 6-16 14-16s14 6 14 16v8" fill="none" stroke="#a87b2d" stroke-width="5"/><path d="M185 117v19m-9-9h18" stroke="#fff8e8" stroke-width="5" stroke-linecap="round"/><circle cx="228" cy="54" r="20" fill="#fff"/><path d="m219 54 6 6 12-13" fill="none" stroke="#5a8d68" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                </button>
+                <button class="workspace-slide-action" type="button" onclick="openAuthModal('login')">Volunteer sign in <span aria-hidden="true">↗</span></button>
+              </article>
+            </div>
+          </div>
+          <div class="workspace-carousel-controls" aria-label="Care sector carousel controls">
+            <button class="workspace-carousel-arrow" type="button" onclick="moveWorkspaceSlide(-1)" aria-label="Previous care sector">←</button>
+            <div class="workspace-carousel-dots" id="workspace-carousel-dots" aria-label="Choose a care sector"></div>
+            <span class="workspace-carousel-status" id="workspace-carousel-status" aria-live="polite">01 / 04</span>
+            <button class="workspace-carousel-arrow" type="button" onclick="moveWorkspaceSlide(1)" aria-label="Next care sector">→</button>
+          </div>
         </div>
       </section>
 
@@ -1613,6 +1652,54 @@
       guideGoNext();
     }
 
+    let workspaceSlideIndex = 0;
+
+    function setWorkspaceSlide(index) {
+      const track = document.getElementById('workspace-carousel-track');
+      if (!track) return;
+      const slides = [...track.querySelectorAll('.workspace-slide')];
+      if (!slides.length) return;
+      workspaceSlideIndex = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${workspaceSlideIndex * 100}%)`;
+      slides.forEach((slide, slideIndex) => {
+        const active = slideIndex === workspaceSlideIndex;
+        slide.setAttribute('aria-hidden', String(!active));
+        slide.inert = !active;
+      });
+      const activeSlide = slides[workspaceSlideIndex];
+      const status = document.getElementById('workspace-carousel-status');
+      const count = String(slides.length).padStart(2, '0');
+      const current = String(workspaceSlideIndex + 1).padStart(2, '0');
+      const sectorLabel = ['CLINICAL', 'EMERGENCY', 'COMMUNITY', 'OUTREACH'][workspaceSlideIndex] || activeSlide.dataset.sector.toUpperCase();
+      if (status) status.textContent = `${current} / ${count} · ${sectorLabel}`;
+      const headingCount = document.getElementById('workspace-count');
+      if (headingCount) headingCount.textContent = `${current} / ${count} · ${sectorLabel}`;
+      document.querySelectorAll('.workspace-carousel-dot').forEach((dot, dotIndex) => {
+        if (dotIndex === workspaceSlideIndex) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    }
+
+    function moveWorkspaceSlide(direction) {
+      setWorkspaceSlide(workspaceSlideIndex + direction);
+    }
+
+    function initWorkspaceCarousel() {
+      const track = document.getElementById('workspace-carousel-track');
+      const dots = document.getElementById('workspace-carousel-dots');
+      if (!track || !dots || dots.childElementCount) return;
+      const slides = [...track.querySelectorAll('.workspace-slide')];
+      slides.forEach((slide, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'workspace-carousel-dot';
+        dot.setAttribute('aria-label', `Show ${slide.dataset.sector} sector`);
+        dot.addEventListener('click', () => setWorkspaceSlide(index));
+        dots.appendChild(dot);
+      });
+      setWorkspaceSlide(0);
+    }
+
     function toggleMobileMenu() {
       const nav = document.getElementById('main-nav');
       const button = document.getElementById('mobile-menu-toggle');
@@ -2030,6 +2117,7 @@
 
     // --- DATA FETCHING ---
     async function initApp() {
+      initWorkspaceCarousel();
       checkServiceStatus();
       updateAuthNavbar();
       if (state.currentUser) {
