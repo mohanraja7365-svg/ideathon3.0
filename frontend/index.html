@@ -125,6 +125,42 @@
       #tab-landing h1 { font-size: clamp(40px, 4.8vw, 52px) !important; }
       .care-orbit { padding: 19px; }
     }
+    /* Keep the landing story visually balanced on desktop-sized screens. */
+    @media (min-width: 1101px) {
+      #tab-landing > div:first-child {
+        grid-template-columns: minmax(0, 1.08fr) minmax(360px, .82fr);
+        min-height: 500px;
+        gap: clamp(30px, 4vw, 68px);
+        padding: clamp(36px, 4.5vw, 68px) !important;
+      }
+      #tab-landing > div:first-child > div:first-child { max-width: 710px; }
+      #tab-landing h1 { font-size: clamp(48px, 4.4vw, 68px) !important; }
+      .care-orbit { justify-self: end; width: min(100%, 470px); min-height: 400px; }
+    }
+    #tab-landing > div:nth-child(2) > div {
+      background-image: linear-gradient(145deg, #fff 58%, #f5f9f1) !important;
+      transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease !important;
+    }
+    #tab-landing > div:nth-child(2) > div:hover { border-color: #cbdcc8 !important; }
+    #tab-landing > div:nth-child(2) > div > div:first-child { font-variant-numeric: tabular-nums; }
+    .care-orbit::after {
+      content: '';
+      position: absolute;
+      inset: 42px 18px 74px;
+      border: 1px solid rgb(220 244 215 / .07);
+      border-radius: 48% 52% 44% 56%;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+    .network-illustration { position: relative; z-index: 1; filter: drop-shadow(0 10px 18px rgb(0 0 0 / .08)); }
+    .workspace-card { transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease, background .24s ease !important; }
+    .workspace-card:hover { border-color: #cbdcc8; background: linear-gradient(145deg, #fff, #f7faf4); }
+    .workspace-card-icon { transition: transform .24s ease; }
+    .workspace-card:hover .workspace-card-icon { transform: translateY(-2px) rotate(-4deg); }
+    @media (max-width: 1100px) {
+      #tab-landing > div:first-child { grid-template-columns: 1fr; }
+      .care-orbit { justify-self: stretch; width: 100%; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
